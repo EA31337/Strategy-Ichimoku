@@ -16,7 +16,7 @@ INPUT int Ichimoku_PriceStopMethod = 0;                                   // Pri
 INPUT float Ichimoku_PriceStopLevel = 0;                                  // Price stop level
 INPUT int Ichimoku_TickFilterMethod = 1;                                  // Tick filter method
 INPUT float Ichimoku_MaxSpread = 4.0;                                     // Max spread to trade (pips)
-INPUT int Ichimoku_Shift = 0;                                             // Shift
+INPUT short Ichimoku_Shift = 0;                                           // Shift
 INPUT int Ichimoku_OrderCloseTime = -20;                                  // Order close time in mins (>0) or bars (<0)
 INPUT string __Ichimoku_Indi_Ichimoku_Parameters__ =
     "-- Ichimoku strategy: Ichimoku indicator params --";    // >>> Ichimoku strategy: Ichimoku indicator <<<

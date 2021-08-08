@@ -4,22 +4,21 @@
  */
 
 // User input params.
-INPUT string __Ichimoku_Parameters__ = "-- Ichimoku strategy params --";  // >>> ICHIMOKU <<<
-INPUT float Ichimoku_LotSize = 0;                                         // Lot size
-INPUT int Ichimoku_SignalOpenMethod = 2;                                  // Signal open method (-127-127)
-INPUT float Ichimoku_SignalOpenLevel = 0.0f;                              // Signal open level
-INPUT int Ichimoku_SignalOpenFilterMethod = 32;                           // Signal open filter method
-INPUT int Ichimoku_SignalOpenBoostMethod = 0;                             // Signal open boost method
-INPUT int Ichimoku_SignalCloseMethod = 2;                                 // Signal close method (-127-127)
-INPUT float Ichimoku_SignalCloseLevel = 0.0f;                             // Signal close level
-INPUT int Ichimoku_PriceStopMethod = 1;                                   // Price stop method
-INPUT float Ichimoku_PriceStopLevel = 0;                                  // Price stop level
-INPUT int Ichimoku_TickFilterMethod = 1;                                  // Tick filter method
-INPUT float Ichimoku_MaxSpread = 4.0;                                     // Max spread to trade (pips)
-INPUT short Ichimoku_Shift = 0;                                           // Shift
-INPUT int Ichimoku_OrderCloseTime = -20;                                  // Order close time in mins (>0) or bars (<0)
-INPUT string __Ichimoku_Indi_Ichimoku_Parameters__ =
-    "-- Ichimoku strategy: Ichimoku indicator params --";    // >>> Ichimoku strategy: Ichimoku indicator <<<
+INPUT_GROUP("Ichimoku strategy: strategy params");
+INPUT float Ichimoku_LotSize = 0;                // Lot size
+INPUT int Ichimoku_SignalOpenMethod = 2;         // Signal open method (-127-127)
+INPUT float Ichimoku_SignalOpenLevel = 0.0f;     // Signal open level
+INPUT int Ichimoku_SignalOpenFilterMethod = 32;  // Signal open filter method
+INPUT int Ichimoku_SignalOpenBoostMethod = 0;    // Signal open boost method
+INPUT int Ichimoku_SignalCloseMethod = 2;        // Signal close method (-127-127)
+INPUT float Ichimoku_SignalCloseLevel = 0.0f;    // Signal close level
+INPUT int Ichimoku_PriceStopMethod = 1;          // Price stop method
+INPUT float Ichimoku_PriceStopLevel = 0;         // Price stop level
+INPUT int Ichimoku_TickFilterMethod = 1;         // Tick filter method
+INPUT float Ichimoku_MaxSpread = 4.0;            // Max spread to trade (pips)
+INPUT short Ichimoku_Shift = 0;                  // Shift
+INPUT int Ichimoku_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
+INPUT_GROUP("Ichimoku strategy: Ichimoku indicator params");
 INPUT int Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen = 9;      // Period Tenkan Sen
 INPUT int Ichimoku_Indi_Ichimoku_Period_Kijun_Sen = 26;      // Period Kijun Sen
 INPUT int Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B = 52;  // Period Senkou Span B

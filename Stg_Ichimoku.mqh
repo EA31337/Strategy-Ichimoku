@@ -8,7 +8,7 @@ INPUT string __Ichimoku_Parameters__ = "-- Ichimoku strategy params --";  // >>>
 INPUT float Ichimoku_LotSize = 0;                                         // Lot size
 INPUT int Ichimoku_SignalOpenMethod = 2;                                  // Signal open method (-127-127)
 INPUT float Ichimoku_SignalOpenLevel = 0.0f;                              // Signal open level
-INPUT int Ichimoku_SignalOpenFilterMethod = 32;                            // Signal open filter method
+INPUT int Ichimoku_SignalOpenFilterMethod = 32;                           // Signal open filter method
 INPUT int Ichimoku_SignalOpenBoostMethod = 0;                             // Signal open boost method
 INPUT int Ichimoku_SignalCloseMethod = 2;                                 // Signal close method (-127-127)
 INPUT float Ichimoku_SignalCloseLevel = 0.0f;                             // Signal close level
@@ -101,49 +101,50 @@ class Stg_Ichimoku : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_Ichimoku *_indi = GetIndicator();
-    bool _is_valid = _indi[CURR].IsValid() && _indi[PREV].IsValid() && _indi[PPREV].IsValid();
-    bool _result = _is_valid;
-    if (_is_valid) {
-      switch (_cmd) {
-        case ORDER_TYPE_BUY:
-          _result &= _indi.IsIncreasing(2, LINE_TENKANSEN, _shift);
-          if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_TENKANSEN] >= _indi[CURR][(int)LINE_CHIKOUSPAN];
-            // Buy 1: Tenkan-sen crosses Kijun-sen upwards.
-            if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_TENKANSEN] < _indi[PREV][(int)LINE_CHIKOUSPAN];
-            if (METHOD(_method, 2)) _result &= _indi.IsIncreasing(2, LINE_CHIKOUSPAN, _shift);
-            if (METHOD(_method, 3)) _result &= _indi.IsIncreasing(2, LINE_TENKANSEN, _shift);
-            if (METHOD(_method, 4)) _result &= _indi.IsIncreasing(2, LINE_KIJUNSEN, _shift);
-            if (METHOD(_method, 5)) _result &= _indi.IsIncreasing(2, LINE_SENKOUSPANA, _shift);
-            if (METHOD(_method, 6)) _result &= _indi.IsIncreasing(2, LINE_SENKOUSPANB, _shift);
-          }
-          // Buy 2: Chinkou Span crosses chart upwards; price is ib the cloud.
-          // @todo: if
-          // ((iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+1)<iClose(NULL,pich2,pkijun+1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+0)>=iClose(NULL,pich2,pkijun+0))&&((iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))||(iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))))
-          // Buy 3: Price crosses Senkou Span-B upwards; price is outside Senkou Span cloud.
-          // @todo:
-          // (iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,1)>iClose(NULL,pich2,1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0)<=iClose(NULL,pich2,0)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)<iClose(NULL,pich2,0))
-          break;
-        case ORDER_TYPE_SELL:
-          _result &= _indi.IsDecreasing(2, LINE_TENKANSEN, _shift);
-          if (_method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_TENKANSEN] <= _indi[CURR][(int)LINE_CHIKOUSPAN];
-            // Sell 1: Tenkan-sen crosses Kijun-sen downwards.
-            if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_TENKANSEN] > _indi[PREV][(int)LINE_CHIKOUSPAN];
-            if (METHOD(_method, 2)) _result &= _indi.IsDecreasing(2, LINE_CHIKOUSPAN, _shift);
-            if (METHOD(_method, 3)) _result &= _indi.IsDecreasing(2, LINE_TENKANSEN, _shift);
-            if (METHOD(_method, 4)) _result &= _indi.IsDecreasing(2, LINE_KIJUNSEN, _shift);
-            if (METHOD(_method, 5)) _result &= _indi.IsDecreasing(2, LINE_SENKOUSPANA, _shift);
-            if (METHOD(_method, 6)) _result &= _indi.IsDecreasing(2, LINE_SENKOUSPANB, _shift);
-          }
-          // Sell 2: Chinkou Span crosses chart downwards; price is ib the cloud.
-          // @todo:
-          // ((iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+1)>iClose(NULL,pich2,pkijun+1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+0)<=iClose(NULL,pich2,pkijun+0))&&((iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))||(iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))))
-          // Sell 3: Price crosses Senkou Span-B downwards; price is outside Senkou Span cloud.
-          // @todo:
-          // (iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,1)<iClose(NULL,pich2,1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0)>=iClose(NULL,pich2,0)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)>iClose(NULL,pich2,0))
-          break;
-      }
+    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID);
+    if (!_result) {
+      // Returns false when indicator data is not valid.
+      return false;
+    }
+    switch (_cmd) {
+      case ORDER_TYPE_BUY:
+        _result &= _indi.IsIncreasing(2, LINE_TENKANSEN, _shift);
+        if (_method != 0) {
+          if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_TENKANSEN] >= _indi[CURR][(int)LINE_CHIKOUSPAN];
+          // Buy 1: Tenkan-sen crosses Kijun-sen upwards.
+          if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_TENKANSEN] < _indi[PREV][(int)LINE_CHIKOUSPAN];
+          if (METHOD(_method, 2)) _result &= _indi.IsIncreasing(2, LINE_CHIKOUSPAN, _shift);
+          if (METHOD(_method, 3)) _result &= _indi.IsIncreasing(2, LINE_TENKANSEN, _shift);
+          if (METHOD(_method, 4)) _result &= _indi.IsIncreasing(2, LINE_KIJUNSEN, _shift);
+          if (METHOD(_method, 5)) _result &= _indi.IsIncreasing(2, LINE_SENKOUSPANA, _shift);
+          if (METHOD(_method, 6)) _result &= _indi.IsIncreasing(2, LINE_SENKOUSPANB, _shift);
+        }
+        // Buy 2: Chinkou Span crosses chart upwards; price is ib the cloud.
+        // @todo: if
+        // ((iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+1)<iClose(NULL,pich2,pkijun+1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+0)>=iClose(NULL,pich2,pkijun+0))&&((iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))||(iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))))
+        // Buy 3: Price crosses Senkou Span-B upwards; price is outside Senkou Span cloud.
+        // @todo:
+        // (iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,1)>iClose(NULL,pich2,1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0)<=iClose(NULL,pich2,0)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)<iClose(NULL,pich2,0))
+        break;
+      case ORDER_TYPE_SELL:
+        _result &= _indi.IsDecreasing(2, LINE_TENKANSEN, _shift);
+        if (_method != 0) {
+          if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_TENKANSEN] <= _indi[CURR][(int)LINE_CHIKOUSPAN];
+          // Sell 1: Tenkan-sen crosses Kijun-sen downwards.
+          if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_TENKANSEN] > _indi[PREV][(int)LINE_CHIKOUSPAN];
+          if (METHOD(_method, 2)) _result &= _indi.IsDecreasing(2, LINE_CHIKOUSPAN, _shift);
+          if (METHOD(_method, 3)) _result &= _indi.IsDecreasing(2, LINE_TENKANSEN, _shift);
+          if (METHOD(_method, 4)) _result &= _indi.IsDecreasing(2, LINE_KIJUNSEN, _shift);
+          if (METHOD(_method, 5)) _result &= _indi.IsDecreasing(2, LINE_SENKOUSPANA, _shift);
+          if (METHOD(_method, 6)) _result &= _indi.IsDecreasing(2, LINE_SENKOUSPANB, _shift);
+        }
+        // Sell 2: Chinkou Span crosses chart downwards; price is ib the cloud.
+        // @todo:
+        // ((iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+1)>iClose(NULL,pich2,pkijun+1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_CHINKOUSPAN,pkijun+0)<=iClose(NULL,pich2,pkijun+0))&&((iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))||(iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)&&iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))))
+        // Sell 3: Price crosses Senkou Span-B downwards; price is outside Senkou Span cloud.
+        // @todo:
+        // (iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,1)<iClose(NULL,pich2,1)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0)>=iClose(NULL,pich2,0)&&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)>iClose(NULL,pich2,0))
+        break;
     }
     return _result;
   }

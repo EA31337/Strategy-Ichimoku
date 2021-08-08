@@ -11,6 +11,7 @@ INPUT float Ichimoku_SignalOpenLevel = 0.0f;     // Signal open level
 INPUT int Ichimoku_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int Ichimoku_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int Ichimoku_SignalCloseMethod = 2;        // Signal close method (-127-127)
+INPUT int Ichimoku_SignalCloseFilter = 0;        // Signal close filter (-127-127)
 INPUT float Ichimoku_SignalCloseLevel = 0.0f;    // Signal close level
 INPUT int Ichimoku_PriceStopMethod = 1;          // Price stop method
 INPUT float Ichimoku_PriceStopLevel = 0;         // Price stop level
@@ -37,9 +38,9 @@ struct Indi_Ichimoku_Params_Defaults : IchimokuParams {
 struct Stg_Ichimoku_Params_Defaults : StgParams {
   Stg_Ichimoku_Params_Defaults()
       : StgParams(::Ichimoku_SignalOpenMethod, ::Ichimoku_SignalOpenFilterMethod, ::Ichimoku_SignalOpenLevel,
-                  ::Ichimoku_SignalOpenBoostMethod, ::Ichimoku_SignalCloseMethod, ::Ichimoku_SignalCloseLevel,
-                  ::Ichimoku_PriceStopMethod, ::Ichimoku_PriceStopLevel, ::Ichimoku_TickFilterMethod,
-                  ::Ichimoku_MaxSpread, ::Ichimoku_Shift, ::Ichimoku_OrderCloseTime) {}
+                  ::Ichimoku_SignalOpenBoostMethod, ::Ichimoku_SignalCloseMethod, ::Ichimoku_SignalCloseFilter,
+                  ::Ichimoku_SignalCloseLevel, ::Ichimoku_PriceStopMethod, ::Ichimoku_PriceStopLevel,
+                  ::Ichimoku_TickFilterMethod, ::Ichimoku_MaxSpread, ::Ichimoku_Shift, ::Ichimoku_OrderCloseTime) {}
 } stg_ichi_defaults;
 
 // Struct to define strategy parameters to override.

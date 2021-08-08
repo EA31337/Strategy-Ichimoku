@@ -18,6 +18,8 @@ INPUT float Ichimoku_PriceStopLevel = 0;         // Price stop level
 INPUT int Ichimoku_TickFilterMethod = 1;         // Tick filter method
 INPUT float Ichimoku_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short Ichimoku_Shift = 0;                  // Shift
+INPUT float Ichimoku_OrderCloseLoss = 0;         // Order close loss
+INPUT float Ichimoku_OrderCloseProfit = 0;       // Order close profit
 INPUT int Ichimoku_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("Ichimoku strategy: Ichimoku indicator params");
 INPUT int Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen = 9;      // Period Tenkan Sen
@@ -40,7 +42,11 @@ struct Stg_Ichimoku_Params_Defaults : StgParams {
       : StgParams(::Ichimoku_SignalOpenMethod, ::Ichimoku_SignalOpenFilterMethod, ::Ichimoku_SignalOpenLevel,
                   ::Ichimoku_SignalOpenBoostMethod, ::Ichimoku_SignalCloseMethod, ::Ichimoku_SignalCloseFilter,
                   ::Ichimoku_SignalCloseLevel, ::Ichimoku_PriceStopMethod, ::Ichimoku_PriceStopLevel,
-                  ::Ichimoku_TickFilterMethod, ::Ichimoku_MaxSpread, ::Ichimoku_Shift, ::Ichimoku_OrderCloseTime) {}
+                  ::Ichimoku_TickFilterMethod, ::Ichimoku_MaxSpread, ::Ichimoku_Shift) {
+    Set(STRAT_PARAM_OCL, Ichimoku_OrderCloseLoss);
+    Set(STRAT_PARAM_OCP, Ichimoku_OrderCloseProfit);
+    Set(STRAT_PARAM_OCT, Ichimoku_OrderCloseTime);
+  }
 } stg_ichi_defaults;
 
 // Struct to define strategy parameters to override.

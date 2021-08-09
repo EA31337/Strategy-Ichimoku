@@ -9,6 +9,7 @@ INPUT float Ichimoku_LotSize = 0;                // Lot size
 INPUT int Ichimoku_SignalOpenMethod = 2;         // Signal open method (-127-127)
 INPUT float Ichimoku_SignalOpenLevel = 0.0f;     // Signal open level
 INPUT int Ichimoku_SignalOpenFilterMethod = 32;  // Signal open filter method
+INPUT int Ichimoku_SignalOpenFilterTime = 6;     // Signal open filter time
 INPUT int Ichimoku_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int Ichimoku_SignalCloseMethod = 2;        // Signal close method (-127-127)
 INPUT int Ichimoku_SignalCloseFilter = 0;        // Signal close filter (-127-127)
@@ -46,6 +47,7 @@ struct Stg_Ichimoku_Params_Defaults : StgParams {
     Set(STRAT_PARAM_OCL, Ichimoku_OrderCloseLoss);
     Set(STRAT_PARAM_OCP, Ichimoku_OrderCloseProfit);
     Set(STRAT_PARAM_OCT, Ichimoku_OrderCloseTime);
+    Set(STRAT_PARAM_SOFT, Ichimoku_SignalOpenFilterTime);
   }
 } stg_ichi_defaults;
 

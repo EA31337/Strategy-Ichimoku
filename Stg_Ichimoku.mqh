@@ -7,13 +7,13 @@
 INPUT_GROUP("Ichimoku strategy: strategy params");
 INPUT float Ichimoku_LotSize = 0;                // Lot size
 INPUT int Ichimoku_SignalOpenMethod = 0;         // Signal open method (-127-127)
-INPUT float Ichimoku_SignalOpenLevel = 0.0f;     // Signal open level
+INPUT float Ichimoku_SignalOpenLevel = 0.001f;   // Signal open level
 INPUT int Ichimoku_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int Ichimoku_SignalOpenFilterTime = 6;     // Signal open filter time
 INPUT int Ichimoku_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int Ichimoku_SignalCloseMethod = 0;        // Signal close method (-127-127)
 INPUT int Ichimoku_SignalCloseFilter = 0;        // Signal close filter (-127-127)
-INPUT float Ichimoku_SignalCloseLevel = 0.0f;    // Signal close level
+INPUT float Ichimoku_SignalCloseLevel = 0.001f;  // Signal close level
 INPUT int Ichimoku_PriceStopMethod = 1;          // Price stop method (0-127)
 INPUT float Ichimoku_PriceStopLevel = 0;         // Price stop level
 INPUT int Ichimoku_TickFilterMethod = 1;         // Tick filter method
@@ -24,8 +24,8 @@ INPUT float Ichimoku_OrderCloseProfit = 0;       // Order close profit
 INPUT int Ichimoku_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("Ichimoku strategy: Ichimoku indicator params");
 INPUT int Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen = 20;     // Period Tenkan Sen
-INPUT int Ichimoku_Indi_Ichimoku_Period_Kijun_Sen = 25;      // Period Kijun Sen
-INPUT int Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B = 52;  // Period Senkou Span B
+INPUT int Ichimoku_Indi_Ichimoku_Period_Kijun_Sen = 24;      // Period Kijun Sen
+INPUT int Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B = 40;  // Period Senkou Span B
 INPUT int Ichimoku_Indi_Ichimoku_Shift = 0;                  // Shift
 
 // Structs.
@@ -123,62 +123,42 @@ class Stg_Ichimoku : public Strategy {
         _result &= _indi[_shift][(int)LINE_TENKANSEN] > _indi[_shift][(int)LINE_KIJUNSEN];
         _result &= _indi[_shift + 2][(int)LINE_TENKANSEN] < _indi[_shift + 2][(int)LINE_KIJUNSEN];
         // Buy 2: Chinkou Span crosses chart upwards; price is ib the cloud.
-        _result &= _indi[_shift][(int)LINE_CHIKOUSPAN] >
-                   fmin3(_chart.GetLow(_shift), _chart.GetLow(_shift + 1), _chart.GetLow(_shift + 2));
+        _result &= _indi[_shift][(int)LINE_CHIKOUSPAN] < _indi[_shift][(int)LINE_TENKANSEN];
         // Buy 3: Price crosses Senkou Span-B upwards; price is outside Senkou Span cloud.
         _result &= _indi[_shift][(int)LINE_SENKOUSPANA] > _indi[_shift][(int)LINE_SENKOUSPANB];
         //_result &= _indi[_shift + 2][(int)LINE_SENKOUSPANA] < _indi[_shift + 2][(int)LINE_SENKOUSPANB];
         // Tenkan-sen is increasing.
-        // _result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _shift);
+        _result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _shift);
         // _result &= _indi.IsIncreasing(1, LINE_CHIKOUSPAN, _shift);
         // _result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _shift);
         // _result &= _indi.IsIncreasing(1, LINE_KIJUNSEN, _shift);
         // _result &= _indi.IsIncreasing(1, LINE_SENKOUSPANA, _shift);
         // _result &= _indi.IsIncreasing(1, LINE_SENKOUSPANB, _shift);
-        // _result &= _indi.IsIncByPct(_level, LINE_TENKANSEN, 0, 2);
+        _result &= _indi.IsIncByPct(_level, LINE_TENKANSEN, 0, 3);
         if (_result && _method != 0) {
           _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         }
-        // @todo: if
-        // &&((iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)
-        // &&iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))
-        // ||(iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)
-        // &&iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))))
-        // @todo:
-        // (iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,1)>iClose(NULL,pich2,1)
-        // &&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0)<=iClose(NULL,pich2,0)
-        // &&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)<iClose(NULL,pich2,0))
         break;
       case ORDER_TYPE_SELL:
         // Sell 1: Tenkan-sen crosses Kijun-sen downwards.
         _result &= _indi[_shift][(int)LINE_TENKANSEN] < _indi[_shift][(int)LINE_KIJUNSEN];
         _result &= _indi[_shift + 2][(int)LINE_TENKANSEN] > _indi[_shift + 2][(int)LINE_KIJUNSEN];
         // Sell 2: Chinkou Span crosses chart downwards; price is ib the cloud.
-        _result &= _indi[_shift][(int)LINE_CHIKOUSPAN] <
-                   fmax3(_chart.GetHigh(_shift), _chart.GetHigh(_shift + 1), _chart.GetHigh(_shift + 2));
+        _result &= _indi[_shift][(int)LINE_CHIKOUSPAN] > _indi[_shift][(int)LINE_TENKANSEN];
         // Sell 3: Price crosses Senkou Span-B downwards; price is outside Senkou Span cloud.
         _result &= _indi[_shift][(int)LINE_SENKOUSPANA] < _indi[_shift][(int)LINE_SENKOUSPANB];
         //_result &= _indi[_shift + 2][(int)LINE_SENKOUSPANA] > _indi[_shift + 2][(int)LINE_SENKOUSPANB];
         // Tenkan-sen is decreasing.
-        //_result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _shift);
+        _result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _shift);
         //_result &= _indi.IsDecreasing(1, LINE_CHIKOUSPAN, _shift);
         //_result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _shift);
         //_result &= _indi.IsDecreasing(1, LINE_KIJUNSEN, _shift);
         //_result &= _indi.IsDecreasing(1, LINE_SENKOUSPANA, _shift);
         //_result &= _indi.IsDecreasing(1, LINE_SENKOUSPANB, _shift);
-        //_result &= _indi.IsDecByPct(-_level, LINE_TENKANSEN, 0, 2);
+        _result &= _indi.IsDecByPct(-_level, LINE_TENKANSEN, 0, 3);
         if (_result && _method != 0) {
           _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         }
-        // @todo: if
-        // &&((iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)
-        // &&iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))
-        // ||(iClose(NULL,pich2,0)<iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)
-        // &&iClose(NULL,pich2,0)>iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0))))
-        // @todo:
-        // (iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,1)<iClose(NULL,pich2,1)
-        // &&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANB,0)>=iClose(NULL,pich2,0)
-        // &&iIchimoku(NULL,pich,ptenkan,pkijun,psenkou,MODE_SENKOUSPANA,0)>iClose(NULL,pich2,0))
         break;
     }
     return _result;

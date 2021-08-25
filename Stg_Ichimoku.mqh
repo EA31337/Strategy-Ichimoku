@@ -21,7 +21,7 @@ INPUT float Ichimoku_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short Ichimoku_Shift = 0;                  // Shift
 INPUT float Ichimoku_OrderCloseLoss = 0;         // Order close loss
 INPUT float Ichimoku_OrderCloseProfit = 0;       // Order close profit
-INPUT int Ichimoku_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
+INPUT int Ichimoku_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("Ichimoku strategy: Ichimoku indicator params");
 INPUT int Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen = 20;     // Period Tenkan Sen
 INPUT int Ichimoku_Indi_Ichimoku_Period_Kijun_Sen = 24;      // Period Kijun Sen

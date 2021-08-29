@@ -80,7 +80,7 @@ class Stg_Ichimoku : public Strategy {
   Stg_Ichimoku(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
       : Strategy(_sparams, _tparams, _cparams, _name) {}
 
-  static Stg_Ichimoku *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
+  static Stg_Ichimoku *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
     IchimokuParams _indi_params(indi_ichi_defaults, _tf);
     StgParams _stg_params(stg_ichi_defaults);
@@ -95,7 +95,7 @@ class Stg_Ichimoku : public Strategy {
     _stg_params.SetIndicator(new Indi_Ichimoku(_indi_params));
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
-    TradeParams _tparams(_magic_no, _log_level);
+    TradeParams _tparams;
     Strategy *_strat = new Stg_Ichimoku(_stg_params, _tparams, _cparams, "Ichimoku");
     return _strat;
   }

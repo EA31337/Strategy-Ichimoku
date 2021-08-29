@@ -44,6 +44,7 @@ struct Stg_Ichimoku_Params_Defaults : StgParams {
                   ::Ichimoku_SignalOpenBoostMethod, ::Ichimoku_SignalCloseMethod, ::Ichimoku_SignalCloseFilter,
                   ::Ichimoku_SignalCloseLevel, ::Ichimoku_PriceStopMethod, ::Ichimoku_PriceStopLevel,
                   ::Ichimoku_TickFilterMethod, ::Ichimoku_MaxSpread, ::Ichimoku_Shift) {
+    Set(STRAT_PARAM_LS, Ichimoku_LotSize);
     Set(STRAT_PARAM_OCL, Ichimoku_OrderCloseLoss);
     Set(STRAT_PARAM_OCP, Ichimoku_OrderCloseProfit);
     Set(STRAT_PARAM_OCT, Ichimoku_OrderCloseTime);

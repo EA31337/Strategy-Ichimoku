@@ -35,7 +35,7 @@ struct Indi_Ichimoku_Params_Defaults : IchimokuParams {
   Indi_Ichimoku_Params_Defaults()
       : IchimokuParams(::Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen, ::Ichimoku_Indi_Ichimoku_Period_Kijun_Sen,
                        ::Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B, ::Ichimoku_Indi_Ichimoku_Shift) {}
-} indi_ichi_defaults;
+};
 
 // Defines struct with default user strategy values.
 struct Stg_Ichimoku_Params_Defaults : StgParams {
@@ -50,7 +50,7 @@ struct Stg_Ichimoku_Params_Defaults : StgParams {
     Set(STRAT_PARAM_OCT, Ichimoku_OrderCloseTime);
     Set(STRAT_PARAM_SOFT, Ichimoku_SignalOpenFilterTime);
   }
-} stg_ichi_defaults;
+};
 
 #ifdef __config__
 // Loads pair specific param values.
@@ -70,7 +70,9 @@ class Stg_Ichimoku : public Strategy {
 
   static Stg_Ichimoku *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
+    Indi_Ichimoku_Params_Defaults indi_ichi_defaults;
     IchimokuParams _indi_params(indi_ichi_defaults, _tf);
+    Stg_Ichimoku_Params_Defaults stg_ichi_defaults;
     StgParams _stg_params(stg_ichi_defaults);
 #ifdef __config__
     SetParamsByTf<IchimokuParams>(_indi_params, _tf, indi_ichi_m1, indi_ichi_m5, indi_ichi_m15, indi_ichi_m30,

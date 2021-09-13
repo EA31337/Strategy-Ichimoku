@@ -52,19 +52,6 @@ struct Stg_Ichimoku_Params_Defaults : StgParams {
   }
 } stg_ichi_defaults;
 
-// Struct to define strategy parameters to override.
-struct Stg_Ichimoku_Params : StgParams {
-  IchimokuParams iparams;
-  StgParams sparams;
-
-  // Struct constructors.
-  Stg_Ichimoku_Params(IchimokuParams &_iparams, StgParams &_sparams)
-      : iparams(indi_ichi_defaults, _iparams.tf.GetTf()), sparams(stg_ichi_defaults) {
-    iparams = _iparams;
-    sparams = _sparams;
-  }
-};
-
 #ifdef __config__
 // Loads pair specific param values.
 #include "config/H1.h"

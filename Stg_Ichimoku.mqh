@@ -81,11 +81,11 @@ class Stg_Ichimoku : public Strategy {
                              stg_ichi_h4, stg_ichi_h8);
 #endif
     // Initialize indicator.
-    _stg_params.SetIndicator(new Indi_Ichimoku(_indi_params));
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
     TradeParams _tparams;
     Strategy *_strat = new Stg_Ichimoku(_stg_params, _tparams, _cparams, "Ichimoku");
+    _strat.SetIndicator(new Indi_Ichimoku(_indi_params));
     return _strat;
   }
 

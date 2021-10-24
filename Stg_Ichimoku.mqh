@@ -31,10 +31,10 @@ INPUT int Ichimoku_Indi_Ichimoku_Shift = 0;                  // Shift
 // Structs.
 
 // Defines struct with default user indicator values.
-struct Indi_Ichimoku_Params_Defaults : IchimokuParams {
+struct Indi_Ichimoku_Params_Defaults : IndiIchimokuParams {
   Indi_Ichimoku_Params_Defaults()
-      : IchimokuParams(::Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen, ::Ichimoku_Indi_Ichimoku_Period_Kijun_Sen,
-                       ::Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B, ::Ichimoku_Indi_Ichimoku_Shift) {}
+      : IndiIchimokuParams(::Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen, ::Ichimoku_Indi_Ichimoku_Period_Kijun_Sen,
+                           ::Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B, ::Ichimoku_Indi_Ichimoku_Shift) {}
 };
 
 // Defines struct with default user strategy values.
@@ -71,12 +71,12 @@ class Stg_Ichimoku : public Strategy {
   static Stg_Ichimoku *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
     Indi_Ichimoku_Params_Defaults indi_ichi_defaults;
-    IchimokuParams _indi_params(indi_ichi_defaults, _tf);
+    IndiIchimokuParams _indi_params(indi_ichi_defaults, _tf);
     Stg_Ichimoku_Params_Defaults stg_ichi_defaults;
     StgParams _stg_params(stg_ichi_defaults);
 #ifdef __config__
-    SetParamsByTf<IchimokuParams>(_indi_params, _tf, indi_ichi_m1, indi_ichi_m5, indi_ichi_m15, indi_ichi_m30,
-                                  indi_ichi_h1, indi_ichi_h4, indi_ichi_h8);
+    SetParamsByTf<IndiIchimokuParams>(_indi_params, _tf, indi_ichi_m1, indi_ichi_m5, indi_ichi_m15, indi_ichi_m30,
+                                      indi_ichi_h1, indi_ichi_h4, indi_ichi_h8);
     SetParamsByTf<StgParams>(_stg_params, _tf, stg_ichi_m1, stg_ichi_m5, stg_ichi_m15, stg_ichi_m30, stg_ichi_h1,
                              stg_ichi_h4, stg_ichi_h8);
 #endif

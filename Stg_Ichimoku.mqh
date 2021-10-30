@@ -30,13 +30,6 @@ INPUT int Ichimoku_Indi_Ichimoku_Shift = 0;                  // Shift
 
 // Structs.
 
-// Defines struct with default user indicator values.
-struct Indi_Ichimoku_Params_Defaults : IndiIchimokuParams {
-  Indi_Ichimoku_Params_Defaults()
-      : IndiIchimokuParams(::Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen, ::Ichimoku_Indi_Ichimoku_Period_Kijun_Sen,
-                           ::Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B, ::Ichimoku_Indi_Ichimoku_Shift) {}
-};
-
 // Defines struct with default user strategy values.
 struct Stg_Ichimoku_Params_Defaults : StgParams {
   Stg_Ichimoku_Params_Defaults()
@@ -88,8 +81,10 @@ class Stg_Ichimoku : public Strategy {
    * Event on strategy's init.
    */
   void OnInit() {
-    Indi_Ichimoku_Params_Defaults indi_ichi_defaults;
-    IndiIchimokuParams _indi_params(indi_ichi_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+    IndiIchimokuParams _indi_params(::Ichimoku_Indi_Ichimoku_Period_Tenkan_Sen,
+                                    ::Ichimoku_Indi_Ichimoku_Period_Kijun_Sen,
+                                    ::Ichimoku_Indi_Ichimoku_Period_Senkou_Span_B, ::Ichimoku_Indi_Ichimoku_Shift);
+    _indi_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
     SetIndicator(new Indi_Ichimoku(_indi_params));
   }
 

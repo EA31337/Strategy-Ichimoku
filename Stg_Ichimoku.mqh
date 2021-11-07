@@ -100,30 +100,30 @@ class Stg_Ichimoku : public Strategy {
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_Ichimoku *_indi = GetIndicator();
     Chart *_chart = (Chart *)_indi;
-    bool _result =
-        _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) && _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 1);
+    int _ishift = _shift + ::Ichimoku_Indi_Ichimoku_Shift;
+    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _ishift);
     if (!_result) {
       // Returns false when indicator data is not valid.
       return false;
     }
-    IndicatorSignal _signals = _indi.GetSignals(4, _shift, LINE_TENKANSEN, LINE_CHIKOUSPAN);
+    IndicatorSignal _signals = _indi.GetSignals(4, _ishift, LINE_TENKANSEN, LINE_CHIKOUSPAN);
     switch (_cmd) {
       case ORDER_TYPE_BUY:
         // Buy 1: Tenkan-sen crosses Kijun-sen upwards.
-        _result &= _indi[_shift][(int)LINE_TENKANSEN] > _indi[_shift][(int)LINE_KIJUNSEN];
-        _result &= _indi[_shift + 2][(int)LINE_TENKANSEN] < _indi[_shift + 2][(int)LINE_KIJUNSEN];
+        _result &= _indi[_ishift][(int)LINE_TENKANSEN] > _indi[_ishift][(int)LINE_KIJUNSEN];
+        _result &= _indi[_ishift + 2][(int)LINE_TENKANSEN] < _indi[_ishift + 2][(int)LINE_KIJUNSEN];
         // Buy 2: Chinkou Span crosses chart upwards; price is ib the cloud.
-        _result &= _indi[_shift][(int)LINE_CHIKOUSPAN] < _indi[_shift][(int)LINE_TENKANSEN];
+        _result &= _indi[_ishift][(int)LINE_CHIKOUSPAN] < _indi[_ishift][(int)LINE_TENKANSEN];
         // Buy 3: Price crosses Senkou Span-B upwards; price is outside Senkou Span cloud.
-        _result &= _indi[_shift][(int)LINE_SENKOUSPANA] > _indi[_shift][(int)LINE_SENKOUSPANB];
-        //_result &= _indi[_shift + 2][(int)LINE_SENKOUSPANA] < _indi[_shift + 2][(int)LINE_SENKOUSPANB];
+        _result &= _indi[_ishift][(int)LINE_SENKOUSPANA] > _indi[_ishift][(int)LINE_SENKOUSPANB];
+        //_result &= _indi[_ishift + 2][(int)LINE_SENKOUSPANA] < _indi[_ishift + 2][(int)LINE_SENKOUSPANB];
         // Tenkan-sen is increasing.
-        _result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _shift);
-        // _result &= _indi.IsIncreasing(1, LINE_CHIKOUSPAN, _shift);
-        // _result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _shift);
-        // _result &= _indi.IsIncreasing(1, LINE_KIJUNSEN, _shift);
-        // _result &= _indi.IsIncreasing(1, LINE_SENKOUSPANA, _shift);
-        // _result &= _indi.IsIncreasing(1, LINE_SENKOUSPANB, _shift);
+        //_result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _ishift);
+        // _result &= _indi.IsIncreasing(1, LINE_CHIKOUSPAN, _ishift);
+        // _result &= _indi.IsIncreasing(1, LINE_TENKANSEN, _ishift);
+        // _result &= _indi.IsIncreasing(1, LINE_KIJUNSEN, _ishift);
+        // _result &= _indi.IsIncreasing(1, LINE_SENKOUSPANA, _ishift);
+        // _result &= _indi.IsIncreasing(1, LINE_SENKOUSPANB, _ishift);
         _result &= _indi.IsIncByPct(_level, LINE_TENKANSEN, 0, 3);
         if (_result && _method != 0) {
           _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
@@ -131,20 +131,20 @@ class Stg_Ichimoku : public Strategy {
         break;
       case ORDER_TYPE_SELL:
         // Sell 1: Tenkan-sen crosses Kijun-sen downwards.
-        _result &= _indi[_shift][(int)LINE_TENKANSEN] < _indi[_shift][(int)LINE_KIJUNSEN];
-        _result &= _indi[_shift + 2][(int)LINE_TENKANSEN] > _indi[_shift + 2][(int)LINE_KIJUNSEN];
+        _result &= _indi[_ishift][(int)LINE_TENKANSEN] < _indi[_ishift][(int)LINE_KIJUNSEN];
+        _result &= _indi[_ishift + 2][(int)LINE_TENKANSEN] > _indi[_ishift + 2][(int)LINE_KIJUNSEN];
         // Sell 2: Chinkou Span crosses chart downwards; price is ib the cloud.
-        _result &= _indi[_shift][(int)LINE_CHIKOUSPAN] > _indi[_shift][(int)LINE_TENKANSEN];
+        _result &= _indi[_ishift][(int)LINE_CHIKOUSPAN] > _indi[_ishift][(int)LINE_TENKANSEN];
         // Sell 3: Price crosses Senkou Span-B downwards; price is outside Senkou Span cloud.
-        _result &= _indi[_shift][(int)LINE_SENKOUSPANA] < _indi[_shift][(int)LINE_SENKOUSPANB];
-        //_result &= _indi[_shift + 2][(int)LINE_SENKOUSPANA] > _indi[_shift + 2][(int)LINE_SENKOUSPANB];
+        _result &= _indi[_ishift][(int)LINE_SENKOUSPANA] < _indi[_ishift][(int)LINE_SENKOUSPANB];
+        //_result &= _indi[_ishift + 2][(int)LINE_SENKOUSPANA] > _indi[_ishift + 2][(int)LINE_SENKOUSPANB];
         // Tenkan-sen is decreasing.
-        _result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _shift);
-        //_result &= _indi.IsDecreasing(1, LINE_CHIKOUSPAN, _shift);
-        //_result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _shift);
-        //_result &= _indi.IsDecreasing(1, LINE_KIJUNSEN, _shift);
-        //_result &= _indi.IsDecreasing(1, LINE_SENKOUSPANA, _shift);
-        //_result &= _indi.IsDecreasing(1, LINE_SENKOUSPANB, _shift);
+        //_result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _ishift);
+        //_result &= _indi.IsDecreasing(1, LINE_CHIKOUSPAN, _ishift);
+        //_result &= _indi.IsDecreasing(1, LINE_TENKANSEN, _ishift);
+        //_result &= _indi.IsDecreasing(1, LINE_KIJUNSEN, _ishift);
+        //_result &= _indi.IsDecreasing(1, LINE_SENKOUSPANA, _ishift);
+        //_result &= _indi.IsDecreasing(1, LINE_SENKOUSPANB, _ishift);
         _result &= _indi.IsDecByPct(-_level, LINE_TENKANSEN, 0, 3);
         if (_result && _method != 0) {
           _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);

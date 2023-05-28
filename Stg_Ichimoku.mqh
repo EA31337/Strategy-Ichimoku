@@ -61,7 +61,7 @@ class Stg_Ichimoku : public Strategy {
   Stg_Ichimoku(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
       : Strategy(_sparams, _tparams, _cparams, _name) {}
 
-  static Stg_Ichimoku *Init(ENUM_TIMEFRAMES _tf = NULL) {
+  static Stg_Ichimoku *Init(ENUM_TIMEFRAMES _tf = NULL, EA* _ea = NULL) {
     // Initialize strategy initial values.
     Stg_Ichimoku_Params_Defaults stg_ichi_defaults;
     StgParams _stg_params(stg_ichi_defaults);
